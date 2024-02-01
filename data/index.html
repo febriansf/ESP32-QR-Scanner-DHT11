@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html>
+<!-- Ini comment-->
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <style>
+    html {
+      font-family: Arial;
+      display: inline-block;
+      margin: 0px auto;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 2.0rem;
+    }
+
+    p {
+      font-size: 2.0rem;
+    }
+
+    .units {
+      font-size: 1.2rem;
+    }
+
+    .dht-labels {
+      font-size: 1.5rem;
+      vertical-align: middle;
+      padding-bottom: 15px;
+    }
+
+    .form-wrapper {
+      background: #fafafa;
+      margin: 3em auto;
+      padding: 0 1em;
+      max-width: 370px;
+    }
+
+    .button-panel {
+      margin: 2em 0 0;
+      width: 100%;
+    }
+	
+	.button-panel .button {
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      height: 50px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1.2em;
+      letter-spacing: 0.05em;
+      text-align: center;
+      text-transform: uppercase;
+      transition: background 0.3s ease-in-out;
+      width: 100%;
+    }
+	
+    .button:hover {
+      background: #ee823e;
+    }
+	
+	.red {
+		background: #ee3e52;
+	}
+	
+	.blue {
+		background: #0b5394;
+	}
+  </style>
+</head>
+
+<body>
+  <div class="form-wrapper">
+    <form action="">
+        <h2>ESP32 DHT Sensor Monitoring</h2>
+        <p>
+          <i class="fas fa-thermometer-half" style="color:#059e8a;"></i>
+          <span class="dht-labels">Temperature</span>
+          <span id="temperature">%TEMPERATURE%</span>
+          <sup class="units">&deg;C</sup>
+        </p>
+        <p>
+          <i class="fas fa-tint" style="color:#00add6;"></i>
+          <span class="dht-labels">Humidity</span>
+          <span id="humidity">%HUMIDITY%</span>
+          <sup class="units">&percnt;</sup>
+        </p>
+
+        <div class="button-panel">
+          <input type="submit" class="button blue" title="Setting" formaction="/config" value="ESP32 Configuration">
+        </div>
+		
+		 <div class="button-panel">
+          <input type="submit" class="button red" title="Setting" formaction="/qr" value="QR Generator">
+        </div>
+    </form>
+  </div>
+  <script>
+    setInterval(function () {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("temperature").innerHTML = this.responseText;
+        }
+      };
+      xhttp.open("GET", "/temperature", true);
+      xhttp.send();
+    }, 5000);
+
+    setInterval(function () {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("humidity").innerHTML = this.responseText;
+        }
+      };
+      xhttp.open("GET", "/humidity", true);
+      xhttp.send();
+    }, 5000);
+  </script>
+</body>
+
+</html>
