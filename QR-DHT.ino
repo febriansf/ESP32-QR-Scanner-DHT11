@@ -84,7 +84,7 @@ IPAddress localGateway;
 IPAddress subnet(255, 255, 255, 0);
 
 // Variabel untuk timing
-unsigned long previousMillis;
+unsigned long previousMillis; 
 unsigned long sendDataMillis;
 
 int send_delay = 1000; // Interval untuk mengirim data ke server
@@ -93,7 +93,7 @@ const long intervalWifi = 10000; // interval to wait for Wi-Fi connection (milli
 
 unsigned long prevMillis; // Vaariabel untuk menyimpan data waktu layar OLED ditampilkan
 unsigned long prevMillisQR;
-const long intervalQr = 3000; // Interval untuk reset setelah menampilkan hasil scan QR
+const long intervalQr = 3000; // Interval untuk reset dispkay setelah menampilkan hasil scan QR
 
 // Fungsi untuk membaca nilai temperatur dari sensor DHT
 String readDHTTemperature()
@@ -304,7 +304,7 @@ void setup()
 
   if (initWiFi())
   {
-    // Route for root / web page
+    // Routes for web service
     server.on("/", HTTP_GET, [](AsyncWebServerRequest * request)
     {
       request->send(SPIFFS, "/index.html", "text/html", false, processor);
@@ -417,7 +417,7 @@ void setup()
       for (int i = 0; i < params; i++) {
         AsyncWebParameter *p = request->getParam(i);
         if (p->isPost()) {
-          // HTTP POST ssid value
+          // HTTP POST text value for qr
           if (p->name() == QR_TEXT) {
             qrText = p->value().c_str();
           }
@@ -537,7 +537,7 @@ void setup()
       for (int i = 0; i < params; i++) {
         AsyncWebParameter *p = request->getParam(i);
         if (p->isPost()) {
-          // HTTP POST ssid value
+          // HTTP POST text value for qr
           if (p->name() == QR_TEXT) {
             qrText = p->value().c_str();
           }
