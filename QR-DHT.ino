@@ -70,6 +70,11 @@ String apiaddress;
 
 String qrText;
 
+// Batas atas temperature untuk mengirim warning ke API
+float tempLimit = 23.0;
+float humidLimit = 50.0;
+boolean isExceeded = false;
+
 // Variabel tambahan untuk menyimpan nilai pada saat program running
 String wifiStatus;
 String config;
@@ -84,7 +89,7 @@ IPAddress localGateway;
 IPAddress subnet(255, 255, 255, 0);
 
 // Variabel untuk timing
-unsigned long previousMillis; 
+unsigned long previousMillis;
 unsigned long sendDataMillis;
 
 int send_delay = 1000; // Interval untuk mengirim data ke server
@@ -572,6 +577,14 @@ void loop()
   // Check if it is a time to send DHT11 temperature and humidity
   if (millis() - millis_counter > send_delay)
   {
+    // Check if temperature and humidity is reaching the limit.
+    if (t.toFloat() > tempLimit || h.toFloat() > humidLimit ) {
+      Serial.println("Temperature and Humidity limit exceeded");
+      isExceeded = true;
+    } else {
+      isExceeded = false;
+    }
+
     if (!tb.connected())
     {
       // Connect to the ThingsBoard
@@ -602,9 +615,14 @@ void loop()
       Serial.print(t);
       Serial.print(" Humidity ");
       Serial.println(h);
+      //      Serial.println(jsonData);
 
       // Sending telemetry to Thingsboard server
       tb.sendTelemetryJson(jsonData);
+
+      // Add data after sending to Thingsboard server cuz it's getting error while doing that
+      tempData["isExceeded"] = true;
+      serializeJson(tempData, jsonData);
 
       HTTPClient http;
       http.begin(wifiClient, apiaddress);
